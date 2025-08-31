@@ -17,7 +17,9 @@ import os
 
 # Model file is in the same folder as main.py
 model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5')
-model = load_model(model_path)
+import tensorflow as tf
+model = tf.keras.models.load_model("simple_rnn_imdb")
+
 
 # model.summary()
 ## Function to decode the reviews
