@@ -13,9 +13,12 @@ reverse_word_index={value:key for key,value in word_index.items()}
 # model=load_model('C:\Machine_learning\RNN\RNN\simple_rnn_imdb.h5')
 import os
 from tensorflow.keras.models import load_model
+import os
 
-model_path = 'simple_rnn_imdb.h5'
+# Model file is in the same folder as main.py
+model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5')
 model = load_model(model_path)
+
 # model.summary()
 ## Function to decode the reviews
 def decode_review(encoded_review):
