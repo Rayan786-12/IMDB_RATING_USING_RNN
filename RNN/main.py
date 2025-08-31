@@ -14,7 +14,7 @@ reverse_word_index={value:key for key,value in word_index.items()}
 import os
 from tensorflow.keras.models import load_model
 
-model_path = os.path.join(os.getcwd(), 'simple_rnn_imdb.h5')
+model_path = 'simple_rnn_imdb.h5'
 model = load_model(model_path)
 # model.summary()
 ## Function to decode the reviews
