@@ -10,8 +10,13 @@ from keras.models import load_model
 word_index=imdb.get_word_index()
 reverse_word_index={value:key for key,value in word_index.items()}
 ## Load the pret rained model with Relu Activation function
-model=load_model('C:\Machine_learning\RNN\RNN\simple_rnn_imdb.h5')
-model.summary()
+# model=load_model('C:\Machine_learning\RNN\RNN\simple_rnn_imdb.h5')
+import os
+from tensorflow.keras.models import load_model
+
+model_path = os.path.join(os.getcwd(), 'simple_rnn_imdb.h5')
+model = load_model(model_path)
+# model.summary()
 ## Function to decode the reviews
 def decode_review(encoded_review):
     return ' '.join([reverse_word_index.get(i - 3, '?') for i in encoded_review]    )   
@@ -47,4 +52,3 @@ if st.button('Classify'):
     st.write(f"Confidence Score:{prediction[0][0]:.4f}")
 else:
     st.write('Please enter a movie review and click "Classify" to see the sentiment prediction.')
-    
