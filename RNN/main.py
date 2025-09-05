@@ -16,9 +16,9 @@ from tensorflow.keras.models import load_model
 import os
 
 # Model file is in the same folder as main.py
-model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5')
+model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5',safe_mode=False)
 import tensorflow as tf
-model = load_model(model_path,safe_mode=False)
+model = load_model(model_path,safe_mode=False, custom_objects={"SimpleRNN": SimpleRNN})
 
 
 # model.summary()
