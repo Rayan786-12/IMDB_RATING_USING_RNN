@@ -15,14 +15,45 @@ import os
 from tensorflow.keras.models import load_model
 import os
 import tensorflow as tf
+import os
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import SimpleRNN
 
-# Model file is in the same folder as main.py
-model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5')
+# 🔧 Custom wrapper to ignore unsupported "time_major" argument
+class CompatibleSimpleRNN(SimpleRNN):
+    @classmethod
+    def from_config(cls, config):
+        config.pop("time_major", None)  # drop unsupported arg
+        return super().from_config(config)
+
+# Path to the old H5 model
+model_path = os.path.join(os.path.dirname(__file__), "simple_rnn_imdb.h5")
+
+# Path to the converted SavedModel
+converted_path = os.path.join(os.path.dirname(__file__), "converted_model")
+
+# If already converted, load the new format
+if os.path.exists(converted_path):
+    model = tf.keras.models.load_model(converted_path)
+    print("✅ Loaded converted SavedModel.")
+else:
+    # Load old H5 model with compatibility fix
+    model = load_model(
+        model_path,
+        safe_mode=False,
+        custom_objects={"SimpleRNN": CompatibleSimpleRNN}
+    )
+    print("✅ Loaded old H5 model with compatibility patch.")
+
+    # Save in new SavedModel format for future use
+    model.save(converted_path, save_format="tf")
+    print(f"💾 Converted model saved to {converted_path}")
+
+# At this point, `model` is ready to use
+
 
 # Pass safe_mode and custom_objects here
-model = load_model(model_path, safe_mode=False, custom_objects={"SimpleRNN": SimpleRNN})
 
 
 # model.summary()
