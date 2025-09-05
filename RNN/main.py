@@ -14,11 +14,15 @@ reverse_word_index={value:key for key,value in word_index.items()}
 import os
 from tensorflow.keras.models import load_model
 import os
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import SimpleRNN
 
 # Model file is in the same folder as main.py
-model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5',safe_mode=False)
-import tensorflow as tf
-model = load_model(model_path,safe_mode=False, custom_objects={"SimpleRNN": SimpleRNN})
+model_path = os.path.join(os.path.dirname(__file__), 'simple_rnn_imdb.h5')
+
+# Pass safe_mode and custom_objects here
+model = load_model(model_path, safe_mode=False, custom_objects={"SimpleRNN": SimpleRNN})
 
 
 # model.summary()
