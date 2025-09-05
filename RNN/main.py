@@ -26,6 +26,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import SimpleRNN
 
 # 🔧 Custom wrapper to ignore unsupported "time_major" argument
+@keras.saving.register_keras_serializable()
 class CompatibleSimpleRNN(SimpleRNN):
     @classmethod
     def from_config(cls, config):
