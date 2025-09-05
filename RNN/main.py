@@ -25,7 +25,13 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import SimpleRNN
 
-# 🔧 Custom wrapper to ignore unsupported "time_major" argument
+import os
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import SimpleRNN
+import keras
+
+# ✅ Register custom SimpleRNN to handle "time_major"
 @keras.saving.register_keras_serializable()
 class CompatibleSimpleRNN(SimpleRNN):
     @classmethod
@@ -36,27 +42,28 @@ class CompatibleSimpleRNN(SimpleRNN):
 # Paths
 base_dir = os.path.dirname(__file__)
 h5_path = os.path.join(base_dir, "simple_rnn_imdb.h5")
-converted_path = os.path.join(base_dir, "converted_model.keras")  # new format
+keras_path = os.path.join(base_dir, "simple_rnn_imdb.keras")  # will be created
 
-# If already converted, load the new .keras model
-if os.path.exists(converted_path):
-    model = tf.keras.models.load_model(converted_path)
-    print("✅ Loaded converted .keras model.")
-else:
-    # Load old H5 model with compatibility patch
+# Load model
+if os.path.exists(keras_path):
+    model = tf.keras.models.load_model(keras_path)
+    print("✅ Loaded converted .keras model")
+elif os.path.exists(h5_path):
     model = load_model(
         h5_path,
         safe_mode=False,
         custom_objects={"SimpleRNN": CompatibleSimpleRNN}
     )
-    print("✅ Loaded old H5 model with compatibility patch.")
+    print("✅ Loaded .h5 model with compatibility patch")
 
-    # Save in new Keras 3 format for future use
-    model.save(converted_path)
-    print(f"💾 Converted model saved to {converted_path}")
+    # Save in new format for future
+    model.save(keras_path)
+    print(f"💾 Converted model saved to {keras_path}")
+else:
+    raise FileNotFoundError("❌ No model file found!")
 
-# At this point, `model` is ready to use
 print("🚀 Model is ready for predictions!")
+
 
 def decode_review(encoded_review):
     return ' '.join([reverse_word_index.get(i - 3, '?') for i in encoded_review]    )   
