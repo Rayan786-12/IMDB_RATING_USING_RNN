@@ -1,8 +1,13 @@
+# Streamlit & frontend
 streamlit==1.49.1
+rich==14.1.0
+
+# ML libraries
 tensorflow-cpu==2.20.0
 keras==3.6.0
 numpy==1.24.3
 pandas==2.2.2
+
 
 
 
