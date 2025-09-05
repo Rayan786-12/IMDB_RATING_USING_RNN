@@ -1,8 +1,7 @@
 streamlit==1.49.1
 tensorflow==2.15.0
 keras==2.15.0
+numpy>=1.26.0
+pandas>=2.0.0
 
-
-numpy
-pandas
 # any other libraries your app uses
