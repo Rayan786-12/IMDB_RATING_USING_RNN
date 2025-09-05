@@ -20,6 +20,11 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import SimpleRNN
 
+import os
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import SimpleRNN
+
 # 🔧 Custom wrapper to ignore unsupported "time_major" argument
 class CompatibleSimpleRNN(SimpleRNN):
     @classmethod
@@ -27,37 +32,31 @@ class CompatibleSimpleRNN(SimpleRNN):
         config.pop("time_major", None)  # drop unsupported arg
         return super().from_config(config)
 
-# Path to the old H5 model
-model_path = os.path.join(os.path.dirname(__file__), "simple_rnn_imdb.h5")
+# Paths
+base_dir = os.path.dirname(__file__)
+h5_path = os.path.join(base_dir, "simple_rnn_imdb.h5")
+converted_path = os.path.join(base_dir, "converted_model.keras")  # new format
 
-# Path to the converted SavedModel
-converted_path = os.path.join(os.path.dirname(__file__), "converted_model")
-
-# If already converted, load the new format
+# If already converted, load the new .keras model
 if os.path.exists(converted_path):
     model = tf.keras.models.load_model(converted_path)
-    print("✅ Loaded converted SavedModel.")
+    print("✅ Loaded converted .keras model.")
 else:
-    # Load old H5 model with compatibility fix
+    # Load old H5 model with compatibility patch
     model = load_model(
-        model_path,
+        h5_path,
         safe_mode=False,
         custom_objects={"SimpleRNN": CompatibleSimpleRNN}
     )
     print("✅ Loaded old H5 model with compatibility patch.")
 
-    # Save in new SavedModel format for future use
-    model.save(converted_path, save_format="tf")
+    # Save in new Keras 3 format for future use
+    model.save(converted_path)
     print(f"💾 Converted model saved to {converted_path}")
 
 # At this point, `model` is ready to use
+print("🚀 Model is ready for predictions!")
 
-
-# Pass safe_mode and custom_objects here
-
-
-# model.summary()
-## Function to decode the reviews
 def decode_review(encoded_review):
     return ' '.join([reverse_word_index.get(i - 3, '?') for i in encoded_review]    )   
 ## Function to preprocess user input
